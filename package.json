@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "googleapis": "^159.0.0",
+    "readline": "^1.3.0"
+  }
+}
