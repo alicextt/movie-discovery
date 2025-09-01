@@ -39,10 +39,10 @@ for(let i = 0; i < data.length; i++) {
     [genre]
   );
 
-    await connection.execute(
-        "INSERT IGNORE INTO movie_genre (movie_id, genre_id) VALUES (?, ?)",
-        [movieId, genreId]
-    );
+  await connection.execute(
+      "INSERT IGNORE INTO movie_genre (movie_id, genre_id) VALUES (?, ?)",
+      [movieId, genreId]
+  );
 }
 
 

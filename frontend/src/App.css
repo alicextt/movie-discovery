@@ -1,0 +1,65 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.nav {
+  display: flex;
+  gap: 32px;
+  text-decoration: underline;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.nav a:hover {
+  background-color: #f0f0f0;
+}
+
+.u-bold {
+  font-weight: bold;
+}
+
+.rating-container{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  margin: 0 auto;
+  width: 60%;
+}
+
+.genre-table {
+  margin: 1rem auto;
+  border-collapse: collapse;
+  width: 60%;
+  table-layout: fixed; 
+}
+
+.genre-table th,
+.genre-table td {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}

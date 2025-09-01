@@ -20,3 +20,5 @@ CREATE TABLE IF NOT EXISTS movie_genre (
   FOREIGN KEY (movie_id) REFERENCES movies(id),
   FOREIGN KEY (genre_id) REFERENCES genres(id)
 );
+
+CREATE INDEX idx_movies_rating_year_id ON movies (rating DESC, year, id);
