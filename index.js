@@ -7,6 +7,44 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/api/genres", async (req, res) => {
+  const genres = await prisma.genres.findMany();
+  res.json(genres);
+});
+
+/**
+ * Create a new movie
+ */
+app.post("/api/movies", async (req, res) => {
+  const { title, rating, year, genreIds } = req.body;
+
+  if (!title || !rating || !year || !genreIds) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    const movie = await prisma.movies.create({
+      data: {
+        title,
+        rating,
+        year,
+        movie_genre: {
+          create: genreIds.map(id => ({
+            genres: {
+              connect: { id }
+            }
+          }))
+        }
+      }
+    });
+
+    res.status(201).json(movie);
+  } catch (error) {
+    console.error("Error creating movie:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 /**
  * Get a list of movies with optional filters
  *
@@ -73,6 +111,9 @@ app.get("/api/movies", async (req, res) => {
   res.json({ results: moviesWithGenres, start: Number(start), count: moviesWithGenres.length, total });
 });
 
+/**
+ * Get movie aggregation data
+ */
 app.get("/api/movies/aggregate", async (req, res) => {
   // Total count
   const totalCount = await prisma.movies.count();
@@ -105,6 +146,9 @@ app.get("/api/movies/aggregate", async (req, res) => {
   res.json({ totalCount, genres: genreCounts, averageRating, yearCounts });
 });
 
+/**
+ * Search for movies by title
+ */
 app.get("/api/movies/search", async (req, res) => {
   const { title } = req.query;
 
