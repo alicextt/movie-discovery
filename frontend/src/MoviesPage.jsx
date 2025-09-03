@@ -35,7 +35,7 @@ export default function MoviesPage() {
               <div className="movie-year">Year: {movie.year}</div>
               {movie.genres && Array.isArray(movie.genres) && (
                 <div className="movie-genres">
-                  {movie.genres.map(g => g.name).join(', ')}
+                  {movie.genres.join(', ')}
                 </div>
               )}
             </div>

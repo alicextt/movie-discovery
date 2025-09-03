@@ -55,18 +55,18 @@ function AddMoviePage() {
       <h2 className="add-movie-title">Add Movie</h2>
       <form onSubmit={handleSubmit} className="add-movie-form">
         <div className="form-group">
-          <label>Title:</label>
-          <input value={title} onChange={e => setTitle(e.target.value)} required className="form-input" />
+          <label htmlFor="title">Title:</label>
+          <input id="title" value={title} onChange={e => setTitle(e.target.value)} required className="form-input" />
           {errors.title && <div className="form-error">{errors.title}</div>}
         </div>
         <div className="form-group">
-          <label>Rating:</label>
-          <input type="number" step="0.1" value={rating} onChange={e => setRating(e.target.value)} required className="form-input" />
+          <label htmlFor="rating">Rating:</label>
+          <input id="rating" type="number" step="0.1" value={rating} onChange={e => setRating(e.target.value)} required className="form-input" />
           {errors.rating && <div className="form-error">{errors.rating}</div>}
         </div>
         <div className="form-group">
-          <label>Year:</label>
-          <input type="number" value={year} onChange={e => setYear(e.target.value)} required className="form-input" />
+          <label htmlFor="year">Year:</label>
+          <input id="year" type="number" value={year} onChange={e => setYear(e.target.value)} required className="form-input" />
           {errors.year && <div className="form-error">{errors.year}</div>}
         </div>
         <div className="form-group">
