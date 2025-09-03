@@ -1,0 +1,42 @@
+.home-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 0 8px;
+}
+
+.home-row {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.home-bold {
+  font-weight: 600;
+  color: #222;
+}
+
+.home-section {
+  margin-bottom: 18px;
+}
+
+.home-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 0.98rem;
+}
+
+.home-table th,
+.home-table td {
+  border-bottom: 1px solid #eee;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.home-table th {
+  background: #f7f7f7;
+  font-weight: 500;
+}
+
+.home-table tr:last-child td {
+  border-bottom: none;
+}

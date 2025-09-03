@@ -1,0 +1,62 @@
+/* Minimal AddMoviePage styles */
+.add-movie-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.add-movie-title {
+  text-align: left;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.add-movie-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.form-input {
+  width: 100%;
+  padding: 4px;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.form-error {
+  color: red;
+  font-size: 12px;
+}
+
+.add-movie-btn {
+  align-self: flex-start;
+  padding: 6px 16px;
+  border-radius: 2px;
+  border: 1px solid #1976d2;
+  background: #1976d2;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.add-movie-message {
+  margin-top: 12px;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.react-select__control {
+  width: 100%;
+}

@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import './MoviesPage.css';
 
 export default function MoviesPage() {
   const [movies, setMovies] = useState([]);
@@ -10,8 +10,8 @@ export default function MoviesPage() {
       const response = await fetch("http://localhost:4000/api/movies?order=desc&count=10&start=0");
       const data = await response.json();
       setMovies(data.results);
+      setHasMore(data.total > data.start + data.count);
     };
-
     fetchData();
   }, []);
 
@@ -23,16 +23,26 @@ export default function MoviesPage() {
   };
 
   return (
-    <div>
-      <h2>Top Rated Movies</h2>
+    <div className="movies-container">
+      <h2 className="movies-title">Top Rated Movies</h2>
+      <div className="movies-list">
         {movies && movies.map((movie, index) => (
-        <div className="rating-container"> 
-         <div className="u-bold">{index + 1}.</div>
-         <div key={movie.id}>{movie.title} - {movie.rating}</div>
-        </div>
+          <div className="movie-card" key={movie.id}>
+            <div className="movie-rank">{index + 1}.</div>
+            <div className="movie-info">
+              <div className="movie-title">{movie.title}</div>
+              <div className="movie-rating">⭐ {movie.rating}</div>
+              <div className="movie-year">Year: {movie.year}</div>
+              {movie.genres && Array.isArray(movie.genres) && (
+                <div className="movie-genres">
+                  {movie.genres.map(g => g.name).join(', ')}
+                </div>
+              )}
+            </div>
+          </div>
         ))}
-
-        {hasMore && <button onClick={handleShowMore}> Show more </button>}
+      </div>
+      {hasMore && <button className="show-more-btn" onClick={handleShowMore}>Show more</button>}
     </div>
   );
 }
