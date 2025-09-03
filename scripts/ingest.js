@@ -33,7 +33,7 @@ async function authenticate() {
     });
     console.log("Authorize this app by visiting this url:", authUrl);
     
-      // Prompt user for code
+    // Prompt user for code
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const code = await new Promise((resolve) => {
     rl.question("Enter the code from Google: ", (answer) => {

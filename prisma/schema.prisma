@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model genres {
+  id          Int           @id @default(autoincrement())
+  name        String?       @unique(map: "name") @db.VarChar(100)
+  movie_genre movie_genre[]
+}
+
+model movie_genre {
+  movie_id Int
+  genre_id Int
+  movies   movies @relation(fields: [movie_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "movie_genre_ibfk_1")
+  genres   genres @relation(fields: [genre_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "movie_genre_ibfk_2")
+
+  @@id([movie_id, genre_id])
+  @@index([genre_id], map: "genre_id")
+}
+
+model movies {
+  id          Int           @id @default(autoincrement())
+  title       String        @unique(map: "title") @db.VarChar(255)
+  rating      Float?        @db.Float
+  year        Int?
+  movie_genre movie_genre[]
+
+  @@index([rating(sort: Desc), year, id], map: "idx_movies_rating_year_id")
+}

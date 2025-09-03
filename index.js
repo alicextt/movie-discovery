@@ -1,20 +1,11 @@
 import express from "express";
 import cors from "cors";
-import mysql from "mysql2/promise";
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-export const pool = mysql.createPool({
-  host: "127.0.0.1",
-  port: 3306,
-  user: "root",
-  password: "root",
-  database: "movies",
-  waitForConnections: true,
-  connectionLimit: 10,
-});
 
 /**
  * Get a list of movies with optional filters
@@ -32,70 +23,86 @@ app.get("/api/movies", async (req, res) => {
   let { genre, minRating, year, order = "desc", count = 10, start = 0 } = req.query;
 
   const sortBy = "rating";
-  order = order.toLowerCase() === "asc" ? "ASC" : "DESC";
+  order = order.toLowerCase() === "asc" ? "asc" : "desc";
 
-  let query = `
-    SELECT
-      m.id, m.title, m.rating, m.year, GROUP_CONCAT(g.name) AS genres
-    FROM movies m
-    JOIN movie_genre mg
-      ON m.id = mg.movie_id
-    JOIN genres g
-      ON mg.genre_id = g.id
-    WHERE 1=1
-  `;
+  let query = prisma.movies.findMany({
+    skip: Number(start),
+    take: Number(count),
+    orderBy: [
+      { rating: order.toLowerCase() === 'asc' ? 'asc' : 'desc' },
+      { year: 'asc' },
+      { id: 'asc' }
+    ],
+    where: {
+      AND: [
+        genre ? { movie_genre: { some: { genres: { name: genre } } } } : {},
+        minRating ? { rating: { gte: Number(minRating) } } : {},
+        year ? { year: Number(year) } : {}
+      ]
+    },
+    include: {
+      movie_genre: {
+        include: {
+          genres: { select: { id: true, name: true } }
+        }
+      }
+    }
+  });
 
-  const params = [];
+  const [rows, total] = await prisma.$transaction([
+    query,
+    prisma.movies.count({
+      where: {
+        AND: [
+          genre ? { movie_genre: { some: { genres: { name: genre } } } } : {},
+          minRating ? { rating: { gte: Number(minRating) } } : {},
+          year ? { year: Number(year) } : {}
+        ]
+      }
+    })
+  ]);
 
-  if (genre) {
-    query += " AND g.name = ? ";
-    params.push(genre);
-  }
+  const moviesWithGenres = rows.map(movie => ({
+    id: movie.id,
+    title: movie.title,
+    rating: movie.rating,
+    year: movie.year,
+    genres: movie.movie_genre.map(mg => mg.genres)
+  }));
 
-  if (minRating) {
-    query += " AND m.rating >= ? ";
-    params.push(Number(minRating));
-  }
-
-  if (year) {
-    query += " AND m.year = ? ";
-    params.push(Number(year));
-  }
-
-  // Get total count
-  const countSql = "SELECT COUNT(*) as total FROM (" + query + " GROUP BY m.id, m.title, m.rating, m.year) t";
-  const [[{ total }]] = await pool.query(countSql, params);
-
-  query += `
-    GROUP BY m.id, m.title, m.rating, m.year
-    ORDER BY rating ${order}, year, id
-    LIMIT ? OFFSET ?
-  `;
-
-  params.push(Number(count), Number(start));
-
-  // Get actual results with pagination
-  const [rows] = await pool.query(query, params);
-  res.json({ results: rows , start: Number(start), count: rows.length, total });
+  res.json({ results: moviesWithGenres, start: Number(start), count: moviesWithGenres.length, total });
 });
 
 app.get("/api/movies/aggregate", async (req, res) => {
-  const [rows] = await pool.query("SELECT COUNT(*) as totalCount FROM movies");
-  const [genreRows] = await pool.query(
-    `SELECT
-      name, count(*) as count
-    FROM genres
-    JOIN movie_genre
-      ON genres.id = movie_genre.genre_id
-    GROUP BY genres.id
-    ORDER BY count DESC`
-  );
+  // Total count
+  const totalCount = await prisma.movies.count();
 
-  const [ratingRows] = await pool.query("SELECT AVG(rating) as averageRating FROM movies");
+  // Genre aggregation
+  const genres = await prisma.genres.findMany({
+    include: {
+      _count: { select: { movie_genre: true } }
+    }
+  });
+  const genreCounts = genres.map(g => ({
+    name: g.name,
+    count: g._count.movie_genre
+  })).sort((a, b) => b.count - a.count);
 
-  const [yearCountRows] = await pool.query("SELECT year, count(*) as count FROM movies GROUP BY year ORDER BY year ASC");
+  // Average rating
+  const avgRatingAgg = await prisma.movies.aggregate({
+    _avg: { rating: true }
+  });
+  const averageRating = avgRatingAgg._avg.rating;
 
-  res.json({ totalCount: rows[0].totalCount, genres: genreRows, averageRating: ratingRows[0].averageRating, yearCounts: yearCountRows });
+  // Year aggregation
+  const yearCountsRaw = await prisma.movies.groupBy({
+    by: ['year'],
+    _count: { id: true },
+    orderBy: { year: 'asc' }
+  });
+  const yearCounts = yearCountsRaw.map(y => ({ year: y.year, count: y._count.id }));
+
+  res.json({ totalCount, genres: genreCounts, averageRating, yearCounts });
 });
 
 app.get("/api/movies/search", async (req, res) => {
@@ -105,24 +112,27 @@ app.get("/api/movies/search", async (req, res) => {
     return res.status(400).json({ error: "Missing search query" });
   }
 
-    const [rows] = await pool.query(
-      `SELECT
-         m.title,
-         m.year,
-         m.rating,
-         GROUP_CONCAT(g.name) as genres
-      FROM movies m
-      JOIN movie_genre mg
-        ON m.id = mg.movie_id
-      JOIN genres g
-        ON mg.genre_id = g.id
-      WHERE m.title LIKE ?
-      GROUP BY m.title, m.year, m.rating
-      LIMIT 5`,
-      [`%${title}%`]
-    );
-  console.log('search', rows);
-  res.json(rows);
+  const rows = await prisma.movies.findMany({
+    where: {
+      title: { contains: title }
+    },
+    include: {
+      movie_genre: {
+        include: { genres: true }
+      }
+    },
+    take: 5
+  });
+
+  const results = rows.map(m => ({
+   id: m.id,
+    title: m.title,
+    rating: m.rating,
+    year: m.year,
+    genres: m.movie_genre.map(mg => mg.genres.name).join(", ")
+  }));
+
+  res.json(results);
 });
 
 app.listen(4000, () => console.log("Server running on port 4000"));
