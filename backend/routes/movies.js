@@ -26,10 +26,11 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get movies with filters
+// Get movies with filters and pagination
 router.get('/', async (req, res) => {
   let { genre, minRating, year, order = "desc", count = 10, start = 0 } = req.query;
   order = order.toLowerCase() === "asc" ? "asc" : "desc";
+
   let query = prisma.movies.findMany({
     skip: Number(start),
     take: Number(count),
@@ -40,7 +41,7 @@ router.get('/', async (req, res) => {
     ],
     where: {
       AND: [
-        genre ? { movie_genre: { some: { genres: { id: Number(genre) } } } } : {},
+        genre ? { movie_genre: { some: { genres: { name: genre } } } } : {},
         minRating ? { rating: { gte: Number(minRating) } } : {},
         year ? { year: Number(year) } : {}
       ]
@@ -53,24 +54,26 @@ router.get('/', async (req, res) => {
       }
     }
   });
+
   const [rows, total] = await prisma.$transaction([
     query,
     prisma.movies.count({
       where: {
         AND: [
-          genre ? { movie_genre: { some: { genres: { id: Number(genre) } } } } : {},
+          genre ? { movie_genre: { some: { genres: { name: genre } } } } : {},
           minRating ? { rating: { gte: Number(minRating) } } : {},
           year ? { year: Number(year) } : {}
         ]
       }
     })
   ]);
+
   const moviesWithGenres = rows.map(movie => ({
     id: movie.id,
     title: movie.title,
     rating: movie.rating,
     year: movie.year,
-    genres: movie.movie_genre.map(mg => mg.genres)
+    genres: movie.movie_genre.map(mg => mg.genres.name)
   }));
   res.json({ results: moviesWithGenres, start: Number(start), count: moviesWithGenres.length, total });
 });

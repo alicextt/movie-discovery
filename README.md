@@ -4,7 +4,7 @@ This project integrates Google Drive API, MySQL, and a React + Express web app f
 
 ## Structure
 - **Google Drive Integration**: Fetches movie JSON files from Google Drive using Node.js (`ingestData.js`).
-- **MySQL Database**: Stores crawled movie data. Managed via Docker Compose and Prsima.
+- **MySQL Database**: Stores crawled movie data. Managed via Docker Compose and Prisma.
 - **Express Server**: Serves movie data via REST API.
 - **React Web App**: Provides UI for searching, aggregating, and adding movies.
 
@@ -46,7 +46,37 @@ in the backend and frontend folder.
   ```
 - The API runs on port 4000 and serves movie data for the frontend.
 
-### 4. React Frontend
+#### API Endpoints
+
+You can query movies with different parameters using the following endpoints:
+
+- `GET /api/movies` — Get movies with default count of 10
+- `GET /api/movies/search?title=Inception` — Search movies by title
+- `GET /api/movies?genre=Action&year=2010&minRating=7` — Filter movies by genre, year and minRating
+- `POST /api/movies` — Add a new movie (JSON body)
+- `GET /api/movies/aggregate` — Get aggregate stats (e.g., count by genre)
+- `GET /api/genres` - Get all genres
+
+##### Example Queries
+
+- Get all movies:
+  ```bash
+  curl http://localhost:4000/api/movies
+  ```
+- Search by title:
+  ```bash
+  curl "http://localhost:4000/api/movies/search?title=Inception"
+  ```
+- Filter by genre:
+  ```bash
+  curl "http://localhost:4000/api/movies?genre=Action"
+  ```
+- Filter by year:
+  ```bash
+  curl "http://localhost:4000/api/movies?year=2020"
+  ```
+
+## Frontend
 
 See the [React Frontend README](./frontend/README.md) for setup and usage details.
 
