@@ -3,44 +3,39 @@
 This project integrates Google Drive API, MySQL, and a React + Express web app for movie data management and search.
 
 ## Structure
-- **Google Drive Integration**: Fetches movie JSON files from Google Drive using Node.js (`ingest.js`).
-- **MySQL Database**: Stores crawled movie data. Managed via Docker Compose and SQL scripts.
-- **Express Server**: Serves movie data via REST API (`index.js`).
+- **Google Drive Integration**: Fetches movie JSON files from Google Drive using Node.js (`ingestData.js`).
+- **MySQL Database**: Stores crawled movie data. Managed via Docker Compose and Prsima.
+- **Express Server**: Serves movie data via REST API.
 - **React Web App**: Provides UI for searching, aggregating, and adding movies.
 
 ## Setup
 
+Run 
+```
+  npm install
+``` 
+in the backend and frontend folder.
+
 ### 1. Google Drive Ingestion
-- Place your `credentials.json` in the project folder.
-- Run `node scripts/ingest.js` to fetch all movie JSON files from Google Drive and export to `movie.json`.
-- Authentication uses OAuth2. On first run, follow the printed URL to authorize and save your token.
+- Place project `credentials.json` in the bakcend folder.
+- Run `npm run ingestData` to fetch all movie JSON files from Google Drive and export to `movie.json`.
+  - First, authentication uses OAuth2. On first run, follow the printed URL to authorize.
+  - Paste the code from return uri into the console and save your access token.
 
 ### 2. MySQL Database
+- Install Docker
 - Start MySQL with Docker Compose:
   ```bash
   docker-compose up -d
   ```
-- Create tables (example):
-  ```sql
-  CREATE TABLE movies (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) UNIQUE,
-    rating FLOAT,
-    year INT
-  );
-  CREATE TABLE genres (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) UNIQUE
-  );
-  CREATE TABLE movie_genre (
-    movie_id INT,
-    genre_id INT,
-    PRIMARY KEY (movie_id, genre_id)
-  );
+- Create tables:
   ```
+  npx prisma migrate reset
+  ```
+  runs the migrations init step to create tables.
 - Import data:
   ```bash
-  node scripts/import.js
+  npm run importDataFromFile
   ```
   This will read `movie.json` and populate the database, using `INSERT IGNORE` to avoid duplicates.
 
@@ -53,15 +48,10 @@ This project integrates Google Drive API, MySQL, and a React + Express web app f
 
 ### 4. React Frontend
 
+See the [React Frontend README](./frontend/README.md) for setup and usage details.
+
 ## Features
 - Search movies by title
-- Aggregate by genre/count
-- Add new movies
-
-## Files
-- `scripts/ingest.js`: Google Drive to JSON export
-- `scripts/import.js`: Import JSON to MySQL
-- `movie.json`: Exported movie data
-- `index.js`: Express server
-- `docker-compose.yml`: MySQL setup
-- `credentials.json`, `token.json`: Google API credentials
+- Filter movies by genre (multi-select)
+- Add new movies with genre selection
+- Aggregate movies by genre and count

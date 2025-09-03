@@ -6,8 +6,8 @@ import readline from "readline";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const CREDENTIALS_PATH = path.resolve(__dirname, "../credentials.json"); // absolute path
-const TOKEN_PATH = path.resolve(__dirname, "../token.json"); // absolute path
+const CREDENTIALS_PATH = path.resolve(__dirname, "../credentials.json");
+const TOKEN_PATH = path.resolve(__dirname, "../token.json");
 const MOVIE_EXPORT_PATH = path.resolve(__dirname, "../movie.json");
 
 /**

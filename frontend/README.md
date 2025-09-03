@@ -1,12 +1,44 @@
-# React + Vite
+# Movie Explorer Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the React frontend for the Movie Explorer app, built with Vite for fast development and minimal configuration.
 
-Currently, two official plugins are available:
+## Features
+- Search movies by title
+- Filter movies by genre (multi-select)
+- Add new movies with genre selection
+- Aggregate movies by genre and count
+- Minimal, clean UI with responsive design
+- Home page, Movies page, and Add Movie page
+- API integration with Express backend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
 
-## Expanding the ESLint configuration
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+3. Open your browser at [http://localhost:5173](http://localhost:5173) (default Vite port).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project Structure
+- `src/` — React components and pages
+- `public/` — Static assets
+- `App.js` — Main app component
+- `MoviesPage.jsx`, `AddMoviePage.jsx`, `HomePage.jsx` — Main pages
+
+## API Integration
+The frontend communicates with the backend API (see backend README for setup). Update API URLs in the code if your backend runs on a different port.
+
+## Customization
+- Edit styles in `src/*.css` for minimal UI changes.
+- Add new features or pages in `src/`.
+
+## Development Tools
+- [Vite](https://vitejs.dev/) for fast development and HMR
+- [React](https://react.dev/) for UI
+- [react-select](https://react-select.com/) for genre multi-select
+
+See the [main project README](../README.md) for backend and overall setup instructions.

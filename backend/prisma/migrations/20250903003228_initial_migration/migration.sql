@@ -1,3 +1,7 @@
+-- CreateDatabase
+CREATE DATABASE IF NOT EXISTS movies;
+USE movies;
+
 -- CreateTable
 CREATE TABLE `genres` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
