@@ -32,12 +32,14 @@ function AddMoviePage() {
     const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length) return;
+
     const genreIds = selectedGenres.map(g => g.value);
     const res = await fetch('http://localhost:4000/api/movies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, rating: Number(rating), year: Number(year), genreIds })
     });
+
     if (res.ok) {
       setMessage('Movie added!');
       setTitle(''); 
@@ -81,7 +83,9 @@ function AddMoviePage() {
           />
           {errors.genres && <div className="form-error">{errors.genres}</div>}
         </div>
-        <button type="submit" className="add-movie-btn">Add Movie</button>
+        <button data-testid="add-movie-btn" type="submit" className="add-movie-btn">
+          Add Movie
+        </button>
       </form>
       {message && <div className="add-movie-message">{message}</div>}
     </div>
