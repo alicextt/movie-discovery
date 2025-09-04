@@ -3,10 +3,12 @@
 This project integrates Google Drive API, MySQL, and a React + Express web app for movie data management and search.
 
 ## Structure
-- **Google Drive Integration**: Fetches movie JSON files from Google Drive using Node.js (`ingestData.js`).
-- **MySQL Database**: Stores crawled movie data. Managed via Docker Compose and Prisma.
-- **Express Server**: Serves movie data via REST API.
-- **React Web App**: Provides UI for searching, aggregating, and adding movies.
+- **Backend**
+  - **Google Drive Integration**: Fetches movie JSON files from Google Drive using Node.js (`ingestData.js`).
+  - **MySQL Database**: Stores crawled movie data. Managed via Docker Compose and Prisma.
+  - **Express Server**: Serves movie data via REST API.
+- **Frontend**
+  - **React Web App**: Provides UI for searching, aggregating, and adding movies.
 
 ## Setup
 
@@ -82,7 +84,7 @@ See the [React Frontend README](./frontend/README.md) for setup and usage detail
 
 ## 5. Features
 - Search movies by title
-- Filter movies by genre (multi-select)
+- Filter movies by year, genre and minimal rating
 - Add new movies with genre selection
 - Aggregate movies by genre and count
 
