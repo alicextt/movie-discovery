@@ -37,10 +37,10 @@ in the backend and frontend folder.
   ```bash
   npm run importDataFromFile
   ```
-  This will read `movie.json` and populate the database, using `INSERT IGNORE` to avoid duplicates.
+  This will read `movie.json` and populate the database, using `prisma upsert method` to avoid duplicates.
 
 ### 3. Express API
-- Start the server:
+- In the backend folder start the server:
   ```bash
   node index.js
   ```

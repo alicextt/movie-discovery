@@ -32,7 +32,7 @@ test('renders HomePage headings and data', async () => {
   // Check headings
   expect(screen.getByText(/Total movies:/)).toBeInTheDocument();
   expect(screen.getByText(/Average ratings:/)).toBeInTheDocument();
-  expect(screen.getByText(/Top genres:/)).toBeInTheDocument();
+  expect(screen.getByText(/Top 5 genres:/)).toBeInTheDocument();
   expect(screen.getByText(/Movies by year:/)).toBeInTheDocument();
 
   // Wait for async data to appear

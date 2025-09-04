@@ -24,7 +24,7 @@ function HomePage() {
       <div className="home-row"><span className='home-bold'>Total movies:</span> {movies}</div>
       <div className="home-row"><span className='home-bold'>Average ratings:</span> {averageRating ? parseFloat(averageRating).toFixed(2) : '-'}</div>
       <div className="home-section">
-        <p className='home-bold'>Top genres:</p>
+        <p className='home-bold'>Top 5 genres:</p>
         <table className='home-table'>
           <thead>
             <tr>
@@ -49,6 +49,7 @@ function HomePage() {
             <tr>
               <th>Year</th>
               <th>Count</th>
+              <th>Movies</th>
             </tr>
           </thead>
           <tbody>
@@ -56,6 +57,7 @@ function HomePage() {
               <tr key={year.year}>
                 <td>{year.year}</td>
                 <td>{year.count}</td>
+                <td>{year.movies && year.movies.join(', ')}</td>
               </tr>
             ))}
           </tbody>

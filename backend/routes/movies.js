@@ -113,7 +113,7 @@ router.get('/aggregate', async (req, res) => {
   const genreCounts = genres.map(g => ({
     name: g.name,
     count: g._count.movie_genre
-  })).sort((a, b) => b.count - a.count);
+  })).sort((a, b) => b.count - a.count).slice(0, 5);
 
   // Average rating
   const avgRatingAgg = await prisma.movies.aggregate({
@@ -121,13 +121,25 @@ router.get('/aggregate', async (req, res) => {
   });
   const averageRating = avgRatingAgg._avg.rating;
 
-  // Year aggregation
-  const yearCountsRaw = await prisma.movies.groupBy({
-    by: ['year'],
-    _count: { id: true },
+  // Year aggregation with movie names
+  const years = await prisma.movies.findMany({
+    select: {
+      year: true,
+      title: true,
+    },
     orderBy: { year: 'asc' }
   });
-  const yearCounts = yearCountsRaw.map(y => ({ year: y.year, count: y._count.id }));
+  // Group by year
+  const yearMap = {};
+  years.forEach(({ year, title }) => {
+    if (!yearMap[year]) yearMap[year] = [];
+    yearMap[year].push(title);
+  });
+  const yearCounts = Object.entries(yearMap).map(([year, titles]) => ({
+    year: Number(year),
+    count: titles.length,
+    movies: titles
+  })).sort((a, b) => a.year - b.year);
 
   res.json({ totalCount, genres: genreCounts, averageRating, yearCounts });
 });
