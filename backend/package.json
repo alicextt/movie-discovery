@@ -11,6 +11,20 @@
   },
   "scripts": {
     "ingestData": "node scripts/ingestData.js",
-    "importDataFromFile": "node scripts/importDataIntoDB.js"
+    "importDataFromFile": "node scripts/importDataIntoDB.js",
+    "test": "vitest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.1.2",
+    "jest": "^30.1.3",
+    "jest-environment-node": "^30.1.2",
+    "jest-esm-transformer": "^1.0.0",
+    "supertest": "^7.1.4",
+    "vitest": "^3.2.4",
+    "vitest-mock-extended": "^3.1.0"
   }
 }

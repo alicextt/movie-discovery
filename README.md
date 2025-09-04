@@ -76,12 +76,17 @@ You can query movies with different parameters using the following endpoints:
   curl "http://localhost:4000/api/movies?year=2020"
   ```
 
-## Frontend
+## 4. Frontend
 
 See the [React Frontend README](./frontend/README.md) for setup and usage details.
 
-## Features
+## 5. Features
 - Search movies by title
 - Filter movies by genre (multi-select)
 - Add new movies with genre selection
 - Aggregate movies by genre and count
+
+## 6. Testing
+- API tests are using vitest for mocking prisma client
+- Front tests are created with Jest
+- Use `npm test` to run tests on API and frontend
